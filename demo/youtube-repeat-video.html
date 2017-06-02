@@ -1,0 +1,81 @@
+<html>
+<head>
+    <title>YouTube repeate video</title>
+    <style>
+        #player {
+            margin-top: 1000px;
+        }
+    </style>
+</head>
+<body>
+    <form id="play">
+        <p>URL : <input type="text" id="url" value="https://www.youtube.com/watch?v=blziOlDCyo8" /></p>
+        <p>Start time : <input type="text" id="start" value="4:44" /></p>
+        <p>End time : <input type="text" id="end" value="5:32" /></p>
+        <button type="submit">Start</button>
+        <button id="pause">Pause</button>
+        <button id="resume">Resume</button>
+    </form>
+
+    <div id="player"></div>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script>
+        var player;
+        var id;
+        var start;
+        var end;
+
+        $(function() {
+            $("#play").submit(function(e) {
+                e.preventDefault();
+                id = $("#url").val().split("v=")[1];
+                start = $("#start").val();
+                start = parseInt(start.split(":")[0] * 60) + parseInt(start.split(":")[1]);
+                end = $("#end").val();
+                end = parseInt(end.split(":")[0] * 60) + parseInt(end.split(":")[1]);
+
+                var tag = document.createElement('script');
+                tag.src = "https://www.youtube.com/player_api";
+                var firstScriptTag = document.getElementsByTagName('script')[0];
+                firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+            });
+
+            $("#resume").click(function() {
+                player.playVideo();
+            });
+
+            $("#pause").click(function() {
+                player.pauseVideo();
+            });
+        });
+
+        function onYouTubePlayerAPIReady() {
+            player = new YT.Player('player', {
+                videoId: id,
+                playerVars: {
+                    autoplay: 1,
+                    loop: 1,
+                    start: start,
+                    end: end
+                },
+                events: {
+                    'onReady': replay,
+                    'onStateChange': onPlayerStateChange
+                }
+            });
+        }
+
+        function onPlayerStateChange(event) {
+            if (event.data == YT.PlayerState.ENDED) {
+                replay();
+            }
+        }
+
+        function replay() {
+            player.seekTo(start);
+        }
+    </script>
+</body>
+
+</html>
