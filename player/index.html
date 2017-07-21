@@ -57,32 +57,17 @@
         var id;
         var start;
         var end;
-        var showInterval;
-        var hideInterval;
-
-        var songs = [
-            {
-                name: "Chinna Chinna Vanna Kuyil from Mouna Raagam by Priyanka",
-                url: "https://www.youtube.com/watch?v=blziOlDCyo8",
-                start: "4:44",
-                end: "5:32"
-            },
-            {
-                name: "Adiyae Yenna Raagam Cover by StariDuo",
-                url: "https://www.youtube.com/watch?v=WG1hz6LQduw",
-                start: "0:45",
-                end: "3:14"
-            }
-        ];
 
         $(function() {
             var playlist = $(".playlist");
 
             var html = '';
-            $.each(songs, function(k, song){
-                html += '<li data-name="'+song.name+'" data-url="'+song.url+'" data-start="'+song.start+'" data-end="'+song.end+'">'+song.name+'</li>';
+            $.getJSON("songs.json", function(songs){
+                $.each(songs, function(k, song){
+                    html += '<li data-name="'+song.name+'" data-url="'+song.url+'" data-start="'+song.start+'" data-end="'+song.end+'">'+song.name+'</li>';
+                });
+                playlist.append(html);
             });
-            playlist.append(html);
 
             $(".playlist").on("click", "li", function(){
                 $(".playlist li").removeClass("active");
@@ -116,17 +101,7 @@
             $("#show-video-check").click(function(){
                 if ($(this).is(":checked")) {
                     $("#player-container").removeClass("push-down");
-                    // showInterval = setInterval(function(){
-                    //     $("#player-container").fadeIn();
-                    // }, 1000);
-                    // setTimeout(function(){
-                    //     hideInterval = setInterval(function(){
-                    //         $("#player-container").fadeOut();
-                    //     }, 1000);
-                    // }, 500);
                 } else {
-                    // clearInterval(showInterval);
-                    // clearInterval(hideInterval);
                     $("#player-container").addClass("push-down");
                 }
             });
@@ -134,7 +109,7 @@
 
 
         var tag = document.createElement('script');
-        tag.src = "//www.youtube.com/player_api";
+        tag.src = "http://www.youtube.com/player_api";
         var firstScriptTag = document.getElementsByTagName('script')[0];
         firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
         
