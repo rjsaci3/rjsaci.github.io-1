@@ -9,7 +9,7 @@
         .hide{display: none;}
 
         #player-container{transition: 1s;}
-        .push-down{margin-top: 200%;}
+        .fade-out{opacity: 0}
         #player{max-width: 100%;}
 
         
@@ -49,7 +49,7 @@
         
         <ul class="playlist"></ul>
 
-        <div id="player-container" class="push-down"><div id="player"></div></div>
+        <div id="player-container" class="fade-out"><div id="player"></div></div>
     </div>
 
     <script>
@@ -100,9 +100,9 @@
 
             $("#show-video-check").click(function(){
                 if ($(this).is(":checked")) {
-                    $("#player-container").removeClass("push-down");
+                    $("#player-container").removeClass("fade-out");
                 } else {
-                    $("#player-container").addClass("push-down");
+                    $("#player-container").addClass("fade-out");
                 }
             });
         });
