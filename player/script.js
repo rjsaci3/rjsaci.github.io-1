@@ -102,6 +102,7 @@ function replay() {
 
 function play() {	
 	$(".list-play").removeClass("hide");
+	$(".player-btn").removeClass("pause");
 
 	start = parseInt(start.split(":")[0] * 60) + parseInt(start.split(":")[1]);
 	end = parseInt(end.split(":")[0] * 60) + parseInt(end.split(":")[1]);
