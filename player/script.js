@@ -21,7 +21,7 @@ $(function() {
 	$(".playlist").on("click", "li", function(){
 		$(".playlist li").removeClass("active");
 		$(this).addClass("active");
-		$(".player-btn").removeClass("pause");
+		
 
 		$(".new-song").slideUp();		
 
@@ -36,7 +36,8 @@ $(function() {
 		play();
 	});
 
-	$(".new-song-btn").click(function(){
+	$(".new-song").submit(function(e){
+		e.preventDefault();
 		id = $("#url").val().split("v=")[1];
 		start = $("#start").val();
 		end = $("#end").val();
