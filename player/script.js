@@ -14,6 +14,10 @@ $(function() {
 		playlist.append(html);
 	});
 
+	$("#url").val(getCookie("url"));
+	$("#start").val(getCookie("start"));
+	$("#end").val(getCookie("end"));
+
 	$(".playlist").on("click", "li", function(){
 		$(".playlist li").removeClass("active");
 		$(this).addClass("active");
@@ -41,6 +45,10 @@ $(function() {
 			$("#url").focus();
 			return false;
 		}
+
+		setCookie("url", $("#url").val());
+		setCookie("start", start);
+		setCookie("end", end);
 
 		play();
 	});
@@ -103,4 +111,26 @@ function play() {
 		'endSeconds': end,
 		'suggestedQuality': 'small'
 	});
+}
+
+function setCookie(cname, cvalue, exdays) {
+    var d = new Date();
+    d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+    var expires = "expires="+d.toUTCString();
+    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+}
+
+function getCookie(cname) {
+    var name = cname + "=";
+    var ca = document.cookie.split(';');
+    for(var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+        }
+    }
+    return "";
 }
