@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+
+    <title>Music Player</title>
+    
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="js/script.js"></script>
+   
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="player-action">
+            <button class="fab-btn player-action-btn hide" id="loop"><i class="fa fa-repeat"></i></button>
+            <button class="fab-btn pause-play player-action-btn hide"><i class="fa fa-pause"></i></button>
+            <button class="fab-btn show-form"><i class="fa fa-plus"></i></button>
+        </div>
+
+        <ul id="playlist" class="box"></ul>
+
+        <form class="new-song box hide">
+            <input type="text" id="url" placeholder="URL"/>
+            <div class="row">
+                <div class="col md-50">
+                    <input type="text" id="start" placeholder="Start Time"/>
+                </div>
+                <div class="col md-50">
+                    <input type="text" id="end" placeholder="End Time"/>
+                </div>
+            </div>
+            <button class="btn">Play</button>
+        </form>
+
+        <div id="player">
+            <audio></audio>
+        </div>
+    </div>
+</body>
+</html>
