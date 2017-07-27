@@ -31,13 +31,13 @@ input, button:focus{outline: none;}
 .progress-wrapper .buffered, .progress-wrapper .played{position: absolute;display: block;width: 0;height: 100%;top: 0;left: 0;}
 .progress-wrapper .buffered{background: #ffcfbf;}
 .progress-wrapper .played{background: #ff5722;}
-.progress-wrapper .played:after{background: #ff5722;width: 15px;height: 15px;position: absolute;right: 0;top: 0;margin-top: -5px;border-radius: 50%;}
+.progress-wrapper .played:after{background: #ff5722;width: 15px;height: 15px;position: absolute;right: -7px;top: 0;margin-top: -5px;border-radius: 50%;}
 .progress-wrapper:hover .played:after{content: "";}
 .progress-wrapper .time{display: block;margin-top: 10px;text-align: center}
 
 .row{margin-left: -10px;margin-right: -10px;}
 .row:before, .row:after{content: "";display: table;clear: both;}
-.col{float: left;box-sizing: border-box;padding: 0 10px;width: 100;}
+.col{float: left;box-sizing: border-box;padding: 0 10px;width: 100%;}
 
 @media screen and (min-width: 600px) {
 	.md-50{width: 50%;}

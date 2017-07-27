@@ -87,16 +87,22 @@ $(function(){
 	});
 
 	$(".progress-wrapper").click(function(e){
-		var width = Math.round(e.offsetX / $(this).width() * 100);
+		seeking(e.offsetX);
+	});
 
-		var newTime = player.duration * width / 100;
-
-		player.currentTime = newTime;
+	$(".progress-wrapper").mousemove(function(e){		
+		if (e.which == 1) {
+			seeking(e.offsetX);
+		}
 	});
 
 	$("body").keydown(function(e){
-		if (e.keyCode && !$(".pause-play").hasClass("hide")) {
+		if (e.keyCode == 32 && !$(".pause-play").hasClass("hide")) {
 			e.preventDefault();
+		}
+	});
+	$("body").keyup(function(e){
+		if (e.keyCode == 32 && !$(".pause-play").hasClass("hide")) {
 			$(".pause-play").click();
 		}
 	});
@@ -172,4 +178,12 @@ function updateProgress() {
 	if (!isNaN(fullTimeMinutes)) {
 		$(".progress-wrapper .full-time").text(fullTimeMinutes + ":" + fullTimeSeconds);
 	}
+}
+
+function seeking(offsetX) {
+	var width = Math.round(offsetX / $(".progress-wrapper").width() * 100);
+
+	var newTime = player.duration * width / 100;
+
+	player.currentTime = newTime;
 }
