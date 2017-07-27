@@ -61,11 +61,10 @@ $(function(){
 	$(".pause-play").click(function(){
 		if (player.paused) {
 			player.play();
-			$(".pause-play i").removeClass("fa-play").addClass("fa-pause");
 		} else {
-			$(".pause-play i").addClass("fa-play").removeClass("fa-pause");
 			player.pause();
 		}
+		$(".pause-play i").toggleClass("fa-play").toggleClass("fa-pause");
 	});
 
 	$(".show-form").click(function(){
