@@ -111,6 +111,12 @@ function setPlayer() {
 
 function play(sTime = 0) {	
 	$(".progress-wrapper").removeClass("hide");
+
+	$(".progress-wrapper .played-time").text("0:00");
+	$(".progress-wrapper .full-time").text("0:00");
+
+	$(".progress-wrapper .buffered").width(0);
+	$(".progress-wrapper .played").width(0);
 		
 	player.currentTime = sTime;
 	player.play();
