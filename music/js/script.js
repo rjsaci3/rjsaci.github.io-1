@@ -93,6 +93,13 @@ $(function(){
 
 		player.currentTime = newTime;
 	});
+
+	$("body").keydown(function(e){
+		if (e.keyCode && !$(".pause-play").hasClass("hide")) {
+			e.preventDefault();
+			$(".pause-play").click();
+		}
+	});
 });
 
 /* play song */
