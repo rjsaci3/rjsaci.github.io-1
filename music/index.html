@@ -10,6 +10,8 @@
     <script src="js/script.js"></script>
    
     <link rel="icon" href="favicon.png">
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+
     <link rel="stylesheet" href="css/font-awesome.min.css">
     <link rel="stylesheet" href="css/style.css">
 </head>
@@ -19,6 +21,18 @@
             <button class="fab-btn player-action-btn hide" id="loop"><i class="fa fa-repeat"></i></button>
             <button class="fab-btn pause-play player-action-btn hide"><i class="fa fa-pause"></i></button>
             <button class="fab-btn show-form"><i class="fa fa-plus"></i></button>
+        </div>
+
+
+        <div class="progress-wrapper hide">
+            <div class="progress">
+                <span class="buffered"></span>
+                <span class="played"></span>
+            </div>
+            <span class="time">
+                <span class="played-time">0:00</span> / 
+                <span class="full-time">0:00</span>
+            </span>
         </div>
 
         <ul id="playlist" class="box"></ul>

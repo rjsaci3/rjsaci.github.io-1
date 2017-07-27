@@ -41,6 +41,12 @@ $(function(){
 		if (player.currentTime > songEnd && songEnd != "") {
 			playNext();
 		}
+		updateProgress();
+	});
+
+	$player.bind("canplay", function(){
+		$(".pause-play i").removeClass("fa-play").addClass("fa-pause");
+		$(".player-action-btn").removeClass("hide");	
 	});
 
 	$player.bind("ended", function(){
@@ -80,6 +86,14 @@ $(function(){
 			$("#url").focus();
 		}
 	});
+
+	$(".progress-wrapper").click(function(e){
+		var width = Math.round(e.offsetX / $(this).width() * 100);
+
+		var newTime = player.duration * width / 100;
+
+		player.currentTime = newTime;
+	});
 });
 
 /* play song */
@@ -95,11 +109,11 @@ function setPlayer() {
 	play(songStart);	
 }
 
-function play(sTime = 0) {
-	$(".pause-play i").removeClass("fa-play").addClass("fa-pause");
-	$(".player-action-btn").removeClass("hide");
+function play(sTime = 0) {	
+	$(".progress-wrapper").removeClass("hide");
+		
 	player.currentTime = sTime;
-	player.play();	
+	player.play();
 }
 
 function playNext() {
@@ -111,5 +125,39 @@ function playNext() {
 			newIndex = 0;
 		}
 		$("#playlist li[data-index='"+ newIndex +"']").click();
+	}
+}
+
+function updateProgress() {
+	var bufferedEnd = 0;
+	if (player.buffered.length > 0) {
+		bufferedEnd = player.buffered.end(0);
+	}	
+	var buffered = bufferedEnd / player.duration * 100;
+	var played = player.currentTime / player.duration * 100;
+	var startTime = "0:00";
+
+	var playedTimeMinutes = Math.floor(player.currentTime / 60);	
+	var playedTimeSeconds = Math.floor(player.currentTime % 60);
+	var fullTimeMinutes = Math.floor(player.duration / 60);	
+	var fullTimeSeconds = Math.floor(player.duration % 60);
+
+	if (playedTimeSeconds < 10) {
+		playedTimeSeconds = "0" + playedTimeSeconds;
+	}
+
+	if (fullTimeSeconds < 10) {
+		fullTimeSeconds = "0" + fullTimeSeconds;
+	}
+
+	$(".progress-wrapper .buffered").width(buffered + "%");
+	$(".progress-wrapper .played").width(played + "%");
+
+	if (!isNaN(fullTimeMinutes)) {
+		$(".progress-wrapper .played-time").text(playedTimeMinutes + ":" + playedTimeSeconds);
+	}
+	
+	if (!isNaN(fullTimeMinutes)) {
+		$(".progress-wrapper .full-time").text(fullTimeMinutes + ":" + fullTimeSeconds);
 	}
 }
