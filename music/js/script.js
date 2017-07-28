@@ -92,6 +92,13 @@ $(function(){
 	$(".show-form").click(function(){
 		$(this).find("i").toggleClass("fa-plus").toggleClass("fa-times");
 		$(".new-song").slideToggle();
+
+		if ($(this).find("i").hasClass("fa-times")) {
+			$("html, body").animate({
+				scrollTop: $(".new-song").offset().top - 20
+			});
+			$("#url").focus();
+		}
 	});
 
 	$(".new-song").submit(function(e){
@@ -100,7 +107,6 @@ $(function(){
 		songUrl = $("#url").val();
 		songStart = $("#start").val();
 		songEnd = $("#end").val();
-
 
 		if (songUrl) {
 			if (songUrl.toLowerCase().indexOf("youtube") > -1) {
