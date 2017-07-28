@@ -23,7 +23,7 @@ input, button:focus{outline: none;}
 #playlist li{padding: 10px 15px;border-bottom: 1px solid rgba(0,0,0,.12);cursor: pointer}
 #playlist li:last-child{border: none;}
 #playlist li.active, #playlist li:hover{background: #ff5722;color: #fff;}
-#playlist i{margin-right: 10px;}
+#playlist i{margin-right: 15px;}
 
 .new-song{padding: 5px 20px;text-align: center;}
 
