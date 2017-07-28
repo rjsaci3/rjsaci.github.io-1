@@ -7,6 +7,7 @@ var yPlayer;
 var currentSong;
 var isLoop = 1;
 var isYoutube;
+var timeUpdater;
 
 $(function(){
 	$aPlayer = $("#audio-player");
@@ -145,8 +146,8 @@ function setPlayer() {
 		var videoId = songUrl.split("v=")[1];
 		yPlayer.loadVideoById({
 			'videoId': videoId,
-			'startSeconds': start,
-			'endSeconds': end,
+			'startSeconds': songStart,
+			'endSeconds': songEnd,
 			'suggestedQuality': 'small'
 		});
 	} else {
@@ -165,18 +166,21 @@ function play(sTime = 0) {
 	$(".progress-wrapper .played").width(0);
 	
 	if (isYoutube) {
-		// aPlayer.pause();
+		aPlayer.pause();
 		yPlayer.seekTo(sTime);
+		$("#show-video").removeClass("hide");
 		$(".player-action-btn").removeClass("hide");
 	} else {
-		// yPlayer.pauseVideo();
+		yPlayer.pauseVideo();
+		$("#show-video").addClass("hide").find("i").addClass("fa-eye").removeClass("fa-eye-slash");
+		$("#yplayer-container").addClass("fade-out");
 		aPlayer.currentTime = sTime;
 		aPlayer.play();
 	}
 }
 
 function playNext(next = 0) {
-	if (isLoop && !next) {
+	if (isLoop && !next) {		
 		play(songStart);
 	} else {
 		var newIndex = currentSong + 1;
@@ -189,17 +193,32 @@ function playNext(next = 0) {
 
 function updateProgress() {
 	var bufferedEnd = 0;
-	if (aPlayer.buffered.length > 0) {
-		bufferedEnd = aPlayer.buffered.end(0);
-	}	
-	var buffered = bufferedEnd / aPlayer.duration * 100;
-	var played = aPlayer.currentTime / aPlayer.duration * 100;
+
+	if (isYoutube) {
+		var currentTime = yPlayer.getCurrentTime();
+		var duration = yPlayer.getDuration();
+	} else {
+		var currentTime = aPlayer.currentTime;
+		var duration = aPlayer.duration;
+	}
+
+	if (isYoutube) {
+		bufferedEnd = yPlayer.getVideoLoadedFraction();
+		var buffered = bufferedEnd * 100;
+	} else {
+		if (aPlayer.buffered.length > 0) {
+			bufferedEnd = aPlayer.buffered.end(0);
+		}		
+		var buffered = bufferedEnd / duration * 100;
+	}
+
+	var played = currentTime / duration * 100;
 	var startTime = "0:00";
 
-	var playedTimeMinutes = Math.floor(aPlayer.currentTime / 60);	
-	var playedTimeSeconds = Math.floor(aPlayer.currentTime % 60);
-	var fullTimeMinutes = Math.floor(aPlayer.duration / 60);	
-	var fullTimeSeconds = Math.floor(aPlayer.duration % 60);
+	var playedTimeMinutes = Math.floor(currentTime / 60);	
+	var playedTimeSeconds = Math.floor(currentTime % 60);
+	var fullTimeMinutes = Math.floor(duration / 60);	
+	var fullTimeSeconds = Math.floor(duration % 60);
 
 	if (playedTimeSeconds < 10) {
 		playedTimeSeconds = "0" + playedTimeSeconds;
@@ -212,7 +231,7 @@ function updateProgress() {
 	$(".progress-wrapper .buffered").width(buffered + "%");
 	$(".progress-wrapper .played").width(played + "%");
 
-	if (!isNaN(fullTimeMinutes)) {
+	if (!isNaN(playedTimeMinutes)) {
 		$(".progress-wrapper .played-time").text(playedTimeMinutes + ":" + playedTimeSeconds);
 	}
 	
@@ -224,9 +243,15 @@ function updateProgress() {
 function seeking(offsetX) {
 	var width = Math.round(offsetX / $(".progress-wrapper").width() * 100);
 
-	var newTime = aPlayer.duration * width / 100;
-
-	aPlayer.currentTime = newTime;
+	if (isYoutube) {
+		var duration = yPlayer.getDuration();
+		yPlayer.seekTo(duration * width / 100);
+	} else {
+		var duration = aPlayer.duration;
+		aPlayer.currentTime = duration * width / 100;
+	}
+	
+	updateProgress();
 }
 
 var tag = document.createElement('script');
@@ -244,6 +269,13 @@ function onYouTubePlayerAPIReady() {
 
 function onPlayerStateChange(event) {
 	if (event.data == YT.PlayerState.ENDED) {
-		replay();
+		playNext();		
+	}
+
+	if (event.data == YT.PlayerState.PLAYING) {
+		updateProgress();	
+		timeUpdater = setInterval(updateProgress, 1000);
+	} else {
+		clearInterval(timeUpdater);
 	}
 }
