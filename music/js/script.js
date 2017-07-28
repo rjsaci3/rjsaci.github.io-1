@@ -8,6 +8,7 @@ var currentSong;
 var isLoop = 1;
 var isYoutube;
 var timeUpdater;
+var ctrlKeyPressed = 0;
 
 $(function(){
 	$aPlayer = $("#audio-player");
@@ -101,6 +102,11 @@ $(function(){
 		}
 	});
 
+	$("#show-video").click(function(){
+		$("#yplayer-container").toggleClass("fade-out");
+		$(this).find("i").toggleClass("fa-eye").toggleClass("fa-eye-slash");
+	});
+
 	$(".new-song").submit(function(e){
 		e.preventDefault();
 
@@ -142,9 +148,28 @@ $(function(){
 		}
 	});
 
-	$("#show-video").click(function(){
-		$("#yplayer-container").toggleClass("fade-out");
-		$(this).find("i").toggleClass("fa-eye").toggleClass("fa-eye-slash");
+	$("body").keydown(function(e){
+		if (e.keyCode == 17) {
+			ctrlKeyPressed = 1;
+		}
+	}).keyup(function(e){
+		if (ctrlKeyPressed) {
+			if (e.keyCode == 37 || e.keyCode == 38) {
+				if ($("#playlist li.active").prev().length) {
+					$("#playlist li.active").prev().click();
+				} else {
+					$("#playlist li:last").click();
+				}
+			} else if(e.keyCode == 39 || e.keyCode == 40) {
+				if ($("#playlist li.active").next().length) {
+					$("#playlist li.active").next().click();
+				} else {
+					$("#playlist li:first").click();
+				}
+			} else {
+				ctrlKeyPressed = 0;
+			}
+		}
 	});
 });
 
