@@ -101,7 +101,13 @@ $(function(){
 		songStart = $("#start").val();
 		songEnd = $("#end").val();
 
+
 		if (songUrl) {
+			if (songUrl.toLowerCase().indexOf("youtube") > -1) {
+				isYoutube = 1;
+			} else {
+				isYoutube = 0;
+			}
 			setPlayer();
 		} else {
 			$("#url").focus();
