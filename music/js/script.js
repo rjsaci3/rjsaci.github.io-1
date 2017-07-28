@@ -165,9 +165,11 @@ function play(sTime = 0) {
 	$(".progress-wrapper .played").width(0);
 	
 	if (isYoutube) {
+		// aPlayer.pause();
 		yPlayer.seekTo(sTime);
 		$(".player-action-btn").removeClass("hide");
 	} else {
+		// yPlayer.pauseVideo();
 		aPlayer.currentTime = sTime;
 		aPlayer.play();
 	}
