@@ -273,9 +273,11 @@ function onPlayerStateChange(event) {
 	}
 
 	if (event.data == YT.PlayerState.PLAYING) {
+		$(".pause-play").removeClass("pause").find("i").addClass("fa-pause").removeClass("fa-play");
 		updateProgress();	
 		timeUpdater = setInterval(updateProgress, 1000);
 	} else {
+		$(".pause-play").addClass("pause").find("i").addClass("fa-play").removeClass("fa-pause");
 		clearInterval(timeUpdater);
 	}
 }
