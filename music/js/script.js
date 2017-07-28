@@ -18,7 +18,11 @@ $(function(){
 		var html = '';
 		songsData = data;
 		$.each(songsData, function(k, v){
-			html += '<li data-index="'+k+'">'+v.name+'</li>';
+			var faClass = "fa-music";
+			if (v.youtube) {
+				faClass = "fa-video-camera";
+			}
+			html += '<li data-index="'+k+'"><i class="fa '+ faClass +'"></i>'+v.name+'</li>';
 		});
 		$("#playlist").html(html);
 	});
