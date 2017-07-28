@@ -1,0 +1,81 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>Slice Effect</title>
+		<style>
+			*{margin:0;padding:0;list-style:none;}
+			div,img{padding:0 margin:0;}
+			#content{width:1000px;margin:0 auto;#FF9966;padding:20px 30px;}
+			
+			#slice_container{position:relative;width:644px;height:360px;border:1px solid;margin:0 auto;}
+			#slice_container img{margin:0 auto;}
+			.slice{float:left;overflow:hidden;position:relative;}
+			.slice_animation_1{-webkit-animation:slice_fly_1 1s forwards;}
+			.slice_animation_2{-webkit-animation:slice_fly_2 .5s forwards;}
+			
+			@-webkit-keyframes slice_fly_1{
+				0%{}
+				25%{-webkit-transform:translate(-100px,-50px);opacity:.75;}
+				50%{-webkit-transform:translate(-300px,100px);opacity:.50;}
+				75%{-webkit-transform:translate(0px,400px);opacity:.25;}
+				100%{-webkit-transform:translate(300px,300px);opacity:0;}
+			}
+			@-webkit-keyframes slice_fly_2{
+				0%{-webkit-transform:translate(300px,300px);opacity:0;}
+				25%{-webkit-transform:translate(350px,200px);opacity:.25;}
+				50%{-webkit-transform:translate(200px,100px);opacity:.50;}
+				75%{-webkit-transform:translate(-50px,-20px);opacity:.75;}
+				100%{-webkit-transform:translate(0,0);opacity:1;}
+				
+			}
+			@-webkit-keyframes slice_rotate{
+				0%{}
+				50%{-webkit-transform:rotateY(180deg)}
+				100%{-webkit-transform:rotateY(360deg)}
+			}
+		</style>
+	</head>
+	<body>
+		<div id="content">
+			<div class="container">
+				<div id="slice_container">
+					<img src="image\1.jpeg" alt=""/>
+				</div>
+			</div>
+		</div>
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+		<script type="text/javascript">
+			$(function(){
+				var row=5,col=5,n_slice=row*col,width=$("#slice_container").width(),height=$("#slice_container").height();
+				var slice=[],$slices;
+				for(i=0;i<n_slice;i++){
+					slice.push('<div class="slice"/>');
+				}
+				$slices=$(slice.join(''));
+				$("#slice_container img").hide().after($slices);
+				$(".slice").css({"width":width/col,"height":height/row,"backgroundImage":"url('image/1.jpeg')"});
+				$slices.each(function(){
+					var pos=$(this).position();
+					$(this).css({'backgroundPosition':-pos.left +'px '+ -pos.top +'px' });
+				});
+				$slices.each(function(i){
+					rand=1000*Math.random();
+					$(this).delay(rand).queue( function(){
+						$(this).addClass("slice_animation_1");
+						$(this).dequeue();
+					});
+					$(this).delay(rand+500).queue( function(){
+						$(this).css({"backgroundImage":"url('image/2.jpg')"});
+						$(this).dequeue();
+					});
+					$(this).delay(rand+500).queue( function(){
+						$(this).addClass("slice_animation_2");
+						$(this).dequeue();
+					});
+					
+				});
+				
+			});
+		</script>
+	</body>
+</html>

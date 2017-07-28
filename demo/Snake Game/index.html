@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>jQuery Snake Game</title>
+</head>
+<body>
+   <canvas id="canvas" width="400px" height="300px"></canvas>
+   <p>Score : <span id="score"></span></p>
+
+   <script type="text/javascript" src="js/jquery-1.4.2.js"></script>
+   <script>   
+    $(function(){
+        var canvas = $("#canvas")[0];
+        var ctx = canvas.getContext("2d");
+        var w = $("#canvas").width();
+        var h = $("#canvas").height();
+        var $score = $("#score"); 
+        
+        var cw = 10;
+        var d;
+        var food;
+        var score;
+        
+        var snakes;
+        
+        function init() {
+            d = "right";
+            score = 0;
+            
+            createSnake();
+            createFood();
+            if (typeof gameLoop !== 'undefined') {clearInterval(gameLoop);}
+            paint();
+            gameLoop = setInterval(paint, 100);
+        }
+        init();
+        
+        function createSnake() {
+            var length = 3;
+            snakes = [];    
+            for (var i = length; i >= 0; i--) {
+                snakes.push({x: i, y: 0});
+            }
+        }
+        
+        function createFood() {
+            food = {
+                x: Math.round(Math.random() * (w - cw) / cw),
+                y: Math.round(Math.random() * (h - cw) / cw)
+            };
+        }
+        
+        function paint() {
+            ctx.fillStyle = "white";
+            ctx.fillRect(0, 0, w, h);
+            ctx.strokeStyle = "black";
+            ctx.strokeRect(0, 0, w, h);    
+            
+            var nx = snakes[0].x;
+            var ny = snakes[0].y;
+            
+            if (d == "right") nx++;
+            else if (d == "left") nx--;
+            else if (d == "up") ny--;
+            else if (d == "down") ny++;
+            
+            if (nx == -1 || nx == w/cw || ny == -1 || ny == h/cw || checkCollision(nx, ny, snakes)) {
+                init();
+                return;
+            }
+            
+            if (nx == food.x && ny == food.y) {     
+              var head = {x: food.x, y: food.y};
+              score++;
+              createFood();
+          } else {
+            var head = {x: nx, y: ny};  
+            snakes.pop();
+        }
+        snakes.unshift(head);
+        
+        for (var i = 0; i < snakes.length; i++) {
+            var c = snakes[i];
+            paintCell(c.x, c.y);
+        }
+        
+        paintCell(food.x, food.y);
+        $score.text(score);
+    }
+    
+    function paintCell(x, y) {
+        ctx.fillStyle = "blue";
+        ctx.fillRect(x*cw, y*cw, cw, cw);
+        ctx.strokeStyle = "white";
+        ctx.strokeRect(x*cw, y*cw, cw, cw);
+    }
+    
+    function checkCollision(x, y, array) {
+        for (var i = 0; i < array.length; i++) {
+            if (array[i].x == x && array[i].y == y) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    $(document).keydown(function(e){
+        var key = e.which;
+        if (key == "37" && d != "right") d = "left";
+        else if (key == "38" && d != "down") d = "up";
+        else if (key == "39" && d != "left") d = "right";
+        else if (key == "40" && d != "up") d = "down";
+    });
+    
+});
+
+</script>
+</body>
+</html>
