@@ -20,7 +20,7 @@ $(function(){
 		songsData = data;
 		$.each(songsData, function(k, v){
 			var faClass = "fa-music";
-			if (v.youtube) {
+			if (v.url.indexOf("youtube") > -1) {
 				faClass = "fa-video-camera";
 			}
 			html += '<li data-index="'+k+'"><i class="fa '+ faClass +'"></i>'+v.name+'</li>';
@@ -37,7 +37,12 @@ $(function(){
 		songUrl = songsData[currentSong]["url"];
 		songStart = songsData[currentSong]["start"];
 		songEnd = songsData[currentSong]["end"];
-		isYoutube = songsData[currentSong]["youtube"] | 0;
+
+		if (songUrl.indexOf("youtube") > -1) {
+			isYoutube = 1;
+		} else {
+			isYoutube = 0;
+		}
 
 		$("#url").val(songUrl);
 		$("#start").val(songStart);
