@@ -19,7 +19,10 @@ $(function(){
 
 	getPlaylists();
 
-	$playlist.on("click", "li", function(){		
+	$playlist.on("click", "li", function(){
+		$playlist.find("li").removeClass("active");
+		$(this).addClass("active");	
+
 		createSongsLlist($(this).data("i"));
 		$(".player-action").slideDown();
 		$playlist.hide();
