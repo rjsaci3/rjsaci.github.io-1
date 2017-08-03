@@ -25,17 +25,18 @@ $(function(){
 		$playlist.hide();
 		$songsList.show();
 		$("#close").show();
+		$("#navigate").find("i").addClass("fa-arrow-left").removeClass("fa-arrow-right");
 	});
 
-	$("#close").click(function(){
-		$songsList.hide();
-		$playlist.show();
-		$(this).hide();
+	$("#navigate").click(function(){
+		$songsList.toggle();
+		$playlist.toggle();
+		$(this).find("i").toggleClass("fa-arrow-left").toggleClass("fa-arrow-right");
 	});
 
 	$songsList.on("click", "li", function(){
 		$songsList.find("li").removeClass("active");
-		$(this).addClass("active");
+		$(this).addClass("active");		
 
 		yPlayer.loadVideoById({
 			'videoId': $(this).data("id"),
