@@ -182,18 +182,21 @@ function createPlaylist() {
 
 function createSongsLlist(i) {
 	var html = "";
+	var songsData = [];
 
 	if (i == "all") {
-		$.each(playlistsData, function(k1, v1){
-			$.each(v1.songs, function(k, v){
-				html += '<li data-id="'+ v.videoId +'">'+ v.title +'</li>';
-			});
+		$.each(playlistsData, function(k, v){
+			$.each(v.songs, function(k2, v2){
+				songsData.push(v2);
+			});			
 		});
 	} else {
-		$.each(playlistsData[i].songs, function(k, v){
-			html += '<li data-id="'+ v.videoId +'">'+ v.title +'</li>';
-		});
+		songsData = playlistsData[i].songs;
 	}
+
+	$.each(songsData, function(k, v){
+		html += '<li data-id="'+ v.videoId +'">'+ v.title +'</li>';
+	});
 	$songsList.html(html);	
 }
 
