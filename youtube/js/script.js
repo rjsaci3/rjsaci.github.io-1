@@ -194,6 +194,8 @@ function createSongsLlist(i) {
 		songsData = playlistsData[i].songs;
 	}
 
+	songsData = shuffleObj(songsData);
+	
 	$.each(songsData, function(k, v){
 		html += '<li data-id="'+ v.videoId +'">'+ v.title +'</li>';
 	});
@@ -297,4 +299,22 @@ function playNext() {
 			$songsList.find("li:first").click();
 		}
 	}
+}
+
+function shuffleObj(obj) {
+	var array = [];
+	var i = 0, j = 0, temp = null;
+
+	for (var k in obj) {
+		array[k] = obj[k];
+	}
+
+	for (i = array.length - 1; i > 0; i -= 1) {
+		j = Math.floor(Math.random() * (i + 1));
+		temp = array[i];
+		array[i] = array[j];
+		array[j] = temp;
+	}
+
+	return array;
 }
