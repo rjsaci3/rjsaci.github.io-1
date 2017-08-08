@@ -173,17 +173,17 @@ function getPlaylistData(i, id) {
 }
 
 function createPlaylist() {
-	var html = "";
+	var html = '<li data-i="all">All</li>';
 	$.each(playlistsData, function(k, v){
 		html += '<li data-i="'+ k +'">'+ v.title +'</li>';
 	});
 	$playlist.html(html);
 }
 
-function createSongsLlist(i = "full") {
+function createSongsLlist(i) {
 	var html = "";
 
-	if (i == "full") {
+	if (i == "all") {
 		$.each(playlistsData, function(k1, v1){
 			$.each(v1.songs, function(k, v){
 				html += '<li data-id="'+ v.videoId +'">'+ v.title +'</li>';
