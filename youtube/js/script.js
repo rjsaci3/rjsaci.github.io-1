@@ -12,6 +12,7 @@ var yPlayer;
 var timeUpdater;
 var isLoop = 0;
 var ctrlKeyPressed = 0;
+var errorTimeout;
 
 $(function(){
 	$playlist = $("#playlist");
@@ -236,10 +237,19 @@ function onPlayerStateChange(event) {
 		playNext();		
 	}
 
+	if (event.data == YT.PlayerState.UNSTARTED) {
+		clearTimeout(errorTimeout);
+		errorTimeout = setTimeout(function(){
+			playNext(1);
+			console.log("error");
+		}, 5000);
+	}
+
 	if (event.data == YT.PlayerState.PLAYING) {
 		$(".pause-play").removeClass("pause").find("i").addClass("fa-pause").removeClass("fa-play");
 		updateProgress();	
 		timeUpdater = setInterval(updateProgress, 1000);
+		clearTimeout(errorTimeout);
 	} else {
 		$(".pause-play").addClass("pause").find("i").addClass("fa-play").removeClass("fa-pause");
 		clearInterval(timeUpdater);
@@ -305,8 +315,8 @@ function seeking(offsetX) {
 	updateProgress();
 }
 
-function playNext() {
-	if (isLoop) {		
+function playNext(isNext = 0) {
+	if (isLoop && isNext == 0) {		
 		yPlayer.seekTo(0);
 	} else {
 		if ($songsList.find("li.active").next().length) {
