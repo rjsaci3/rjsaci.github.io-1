@@ -90,8 +90,19 @@ $(function(){
 	});
 
 	$("#show-video").click(function(){
-		$("#yplayer-container").toggleClass("active");
+		var vContainer = $("#yplayer-container");
 		$(this).find("i").toggleClass("fa-eye").toggleClass("fa-eye-slash");
+		if (vContainer.hasClass("active")) {
+			vContainer.removeClass("active");
+			setTimeout(function(){
+				vContainer.addClass("hide");
+			}, 500);
+		} else {
+			vContainer.removeClass("hide");
+			setTimeout(function(){
+				vContainer.addClass("active");
+			});
+		}
 	});
 
 	$("body").keydown(function(e){

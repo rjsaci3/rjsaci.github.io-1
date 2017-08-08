@@ -31,7 +31,7 @@ body{background: #131313;color: #fff;}
 .progress-wrapper:hover .played:after{content: "";}
 .progress-wrapper .time{display: block;margin-top: 10px;text-align: center}
 
-#yplayer-container{transition: .5s;transform: scale(0);}
+#yplayer-container{transition: .5s;transform: scale(1,0);}
 #yplayer-container.active{transform: scale(1);}
 #yplayer{max-width: 100%;}
 
