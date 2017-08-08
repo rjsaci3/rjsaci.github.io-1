@@ -24,17 +24,21 @@ $(function(){
 		$(this).addClass("active");	
 
 		createSongsLlist($(this).data("i"));
-		$(".player-action").slideDown();
+		$(".player-action").slideDown(function(){
+			setFixedBarPadding();
+		});
 		$playlist.hide();
 		$songsList.show();
 		$("#close").show();
 		$("#navigate").find("i").addClass("fa-arrow-left").removeClass("fa-arrow-right");
+		$(document).scrollTop(0);
 	});
 
 	$("#navigate").click(function(){
 		$songsList.toggle();
 		$playlist.toggle();
 		$(this).find("i").toggleClass("fa-arrow-left").toggleClass("fa-arrow-right");
+		$(document).scrollTop(0);
 	});
 
 	$songsList.on("click", "li", function(){
@@ -56,6 +60,7 @@ $(function(){
 		$(".progress-wrapper .played").width(0);
 
 		$(".player-action-btn").removeClass("hide");
+		setFixedBarPadding();
 	});
 
 	$(".progress-wrapper").click(function(e){
@@ -85,7 +90,7 @@ $(function(){
 	});
 
 	$("#show-video").click(function(){
-		$("#yplayer-container").toggleClass("fade-out");
+		$("#yplayer-container").toggleClass("active");
 		$(this).find("i").toggleClass("fa-eye").toggleClass("fa-eye-slash");
 	});
 
@@ -195,7 +200,7 @@ function createSongsLlist(i) {
 	}
 
 	songsData = shuffleObj(songsData);
-	
+
 	$.each(songsData, function(k, v){
 		html += '<li data-id="'+ v.videoId +'">'+ v.title +'</li>';
 	});
@@ -317,4 +322,9 @@ function shuffleObj(obj) {
 	}
 
 	return array;
+}
+
+function setFixedBarPadding() {
+	var fixedHeight = $("#fixed-bar").height() + 20;
+	$(".container").animate({paddingTop: fixedHeight + "px"});
 }

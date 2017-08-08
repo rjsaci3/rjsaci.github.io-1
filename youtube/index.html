@@ -14,28 +14,30 @@
 </head>
 <body>
 	<div class="container">
-		<div class="player-action hide">
-            <button class="fab-btn" id="navigate"><i class="fa fa-arrow-left"></i></button>
-            <button class="fab-btn player-action-btn hide" id="loop"><i class="fa fa-refresh"></i></button>
-            <button class="fab-btn pause-play player-action-btn hide"><i class="fa fa-pause"></i></button>
-            <button class="fab-btn player-action-btn hide" id="show-video"><i class="fa fa-eye"></i></button>
-		</div>
+		<div id="fixed-bar" class="box">
+			<div class="player-action hide">
+				<button class="fab-btn" id="navigate"><i class="fa fa-arrow-left"></i></button>
+				<button class="fab-btn player-action-btn hide" id="loop"><i class="fa fa-refresh"></i></button>
+				<button class="fab-btn pause-play player-action-btn hide"><i class="fa fa-pause"></i></button>
+				<button class="fab-btn player-action-btn hide" id="show-video"><i class="fa fa-eye"></i></button>
+			</div>
 
-		 <div class="progress-wrapper hide">
-            <div class="progress">
-                <span class="buffered"></span>
-                <span class="played"></span>
-            </div>
-            <span class="time">
-                <span class="played-time">0:00</span> / 
-                <span class="full-time">0:00</span>
-            </span>
-        </div>
+			<div class="progress-wrapper hide">
+				<div class="progress">
+					<span class="buffered"></span>
+					<span class="played"></span>
+				</div>
+				<span class="time">
+					<span class="played-time">0:00</span> / 
+					<span class="full-time">0:00</span>
+				</span>
+			</div>
+		</div>
 		
 		<ul id="playlist" class="box list"></ul>
 		<ul id="songslist" class="box list"></ul>
 
-		<div id="yplayer-container" class="fade-out"><div id="yplayer"></div></div>
+		<div id="yplayer-container"><div id="yplayer"></div></div>
 	</div>
 
 	<script src="js/jquery.min.js"></script>
