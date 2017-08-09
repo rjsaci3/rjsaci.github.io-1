@@ -17,6 +17,7 @@ var errorTimeout;
 $(function(){
 	$playlist = $("#playlist");
 	$songsList = $("#songslist");
+	$progressTooltip = $(".progress-wrapper .tooltip");
 
 	getPlaylists();
 
@@ -72,6 +73,17 @@ $(function(){
 		if (e.which == 1) {
 			seeking(e.offsetX);
 		}
+
+		var width = Math.round(e.offsetX / $(".progress-wrapper").width() * 100);
+		var toolTime = yPlayer.getDuration() * width / 100;
+		var toolTimeMinutes = Math.floor(toolTime / 60);	
+		var toolTimeSeconds = Math.floor(toolTime % 60);
+
+		if (toolTimeSeconds < 10) {
+			toolTimeSeconds = "0" + toolTimeSeconds;
+		}
+
+		$progressTooltip.text(toolTimeMinutes + ":" + toolTimeSeconds).css({left: e.offsetX});
 	});
 
 	$("#loop").click(function(){
