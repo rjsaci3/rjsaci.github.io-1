@@ -103,14 +103,15 @@ $(function(){
 	});
 
 	$("#show-video").click(function(){
-		var vContainer = $("#yplayer-container");
-		$(this).find("i").toggleClass("fa-eye").toggleClass("fa-eye-slash");
-		if (vContainer.hasClass("active")) {			
+		var vContainer = $("#yplayer-container");		
+		if (vContainer.hasClass("active")) {
+			$(this).find("i").addClass("fa-eye").removeClass("fa-eye-slash");		
 			vContainer.removeClass("active");
 			setTimeout(function(){
 				vContainer.addClass("hide");
 			}, 500);
 		} else {
+			$(this).find("i").removeClass("fa-eye").addClass("fa-eye-slash");
 			vContainer.removeClass("hide");
 			$("html, body").animate({
 				scrollTop: vContainer.offset().top
