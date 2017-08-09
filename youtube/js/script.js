@@ -93,16 +93,19 @@ $(function(){
 	$("#show-video").click(function(){
 		var vContainer = $("#yplayer-container");
 		$(this).find("i").toggleClass("fa-eye").toggleClass("fa-eye-slash");
-		if (vContainer.hasClass("active")) {
+		if (vContainer.hasClass("active")) {			
 			vContainer.removeClass("active");
 			setTimeout(function(){
 				vContainer.addClass("hide");
 			}, 500);
 		} else {
 			vContainer.removeClass("hide");
+			$("html, body").animate({
+				scrollTop: vContainer.offset().top
+			}, 500);
 			setTimeout(function(){
 				vContainer.addClass("active");
-			});
+			}, 500);
 		}
 	});
 

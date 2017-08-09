@@ -1,6 +1,6 @@
-*{margin: 0;padding: 0;box-sizing: border-box;font-family: 'Roboto', sans-serif;}
+*{margin: 0;padding: 0;box-sizing: border-box;font-family: 'Roboto', sans-serif;-webkit-tap-highlight-color: transparent;}
 *:focus{outline: none;}
-body{background: #131313;color: #fff;}
+body{background: #131313;color: #fff;font-size: 15px;}
 
 .container{width: 90%;margin: auto;max-width: 600px;padding-top: 0;}
 
@@ -15,8 +15,8 @@ body{background: #131313;color: #fff;}
 .list li.active, .list li:hover{background: #cc181e;color: #fff;}
 .list i{margin-right: 15px;}
 
-.fab-btn{display: inline-block;width: 50px;height: 50px;border: none;border-radius: 50%;cursor: pointer;background: #cc181e;color: #fff;box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1px -2px rgba(0,0,0,0.2);}
-.fab-btn i{font-size: 25px;line-height: 50px;}
+.fab-btn{display: inline-block;width: 45px;height: 45px;border: none;border-radius: 50%;cursor: pointer;background: #cc181e;color: #fff;box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1px -2px rgba(0,0,0,0.2);}
+.fab-btn i{font-size: 20px;line-height: 45px;}
 .fab-btn i.fa-play{margin-left: 5px;}
 
 .player-action{text-align: center;margin: 10px 0;user-select: none;}
@@ -29,10 +29,21 @@ body{background: #131313;color: #fff;}
 .progress-wrapper .played{background: #cc181e;}
 .progress-wrapper .played:after{background: #cc181e;width: 15px;height: 15px;position: absolute;right: -7px;top: 0;margin-top: -5px;border-radius: 50%;}
 .progress-wrapper:hover .played:after{content: "";}
-.progress-wrapper .time{display: block;margin-top: 10px;text-align: center}
+.progress-wrapper .time{display: block;margin-top: 10px;font-size: 13px;}
+.progress-wrapper .full-time{float: right;}
 
 #yplayer-container{transition: .5s;transform: scale(1,0);}
 #yplayer-container.active{transform: scale(1);}
 #yplayer{max-width: 100%;}
 
 .hide{display: none;}
+
+@media screen and (max-width: 400px) {
+	body{font-size: 14px;}
+
+	.player-action{margin: 5px 0;}
+	.player-action .fab-btn{margin: 5px;}
+
+	.fab-btn{width: 40px;height: 40px;}
+	.fab-btn i{font-size: 17px;line-height: 40px;}
+}
