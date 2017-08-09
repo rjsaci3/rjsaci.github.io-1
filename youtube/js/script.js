@@ -257,9 +257,13 @@ function onPlayerStateChange(event) {
 		clearTimeout(errorTimeout);
 		errorTimeout = setTimeout(function(){
 			playNext(1);
-			console.log("error");
+			console.log("Video not found or blocked");
 		}, 5000);
 	}
+
+	if (event.data == YT.PlayerState.BUFFERING) {
+		clearTimeout(errorTimeout);
+	} 
 
 	if (event.data == YT.PlayerState.PLAYING) {
 		$(".pause-play").removeClass("pause").find("i").addClass("fa-pause").removeClass("fa-play");

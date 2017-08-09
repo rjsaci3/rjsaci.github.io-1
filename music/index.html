@@ -17,23 +17,25 @@
 </head>
 <body>
     <div class="container">
-        <div class="player-action">
-            <button class="fab-btn hide" id="show-video"><i class="fa fa-eye"></i></button>
-            <button class="fab-btn player-action-btn hide" id="loop"><i class="fa fa-repeat"></i></button>
-            <button class="fab-btn pause-play player-action-btn hide"><i class="fa fa-pause"></i></button>
-            <button class="fab-btn show-form"><i class="fa fa-plus"></i></button>
-        </div>
-
-
-        <div class="progress-wrapper hide">
-            <div class="progress">
-                <span class="buffered"></span>
-                <span class="played"></span>
+        <div id="fixed-bar" class="box">
+            <div class="player-action">
+                <button class="fab-btn show-form"><i class="fa fa-plus"></i></button>
+                <button class="fab-btn player-action-btn hide" id="loop"><i class="fa fa-repeat"></i></button>
+                <button class="fab-btn pause-play player-action-btn hide"><i class="fa fa-pause"></i></button>
+                <button class="fab-btn hide" id="show-video"><i class="fa fa-eye"></i></button>
             </div>
-            <span class="time">
-                <span class="played-time">0:00</span> / 
-                <span class="full-time">0:00</span>
-            </span>
+
+            <div class="progress-wrapper hide">
+                <div class="progress">
+                    <span class="buffered"></span>
+                    <span class="played"></span>
+                    <span class="tooltip">0:00</span>
+                </div>
+                <span class="time">
+                    <span class="played-time">0:00</span> 
+                    <span class="full-time">0:00</span>
+                </span>
+            </div>
         </div>
 
         <ul id="playlist" class="box"></ul>
@@ -51,7 +53,7 @@
             <button class="btn">Play</button>
         </form>
 
-        <div id="yplayer-container" class="fade-out"><div id="yplayer"></div></div>
+        <div id="yplayer-container" class="hide"><div id="yplayer"></div></div>
 
         <audio id="audio-player"></audio>
     </div>

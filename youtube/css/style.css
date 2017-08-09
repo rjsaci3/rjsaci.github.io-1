@@ -1,12 +1,13 @@
 *{margin: 0;padding: 0;box-sizing: border-box;font-family: 'Roboto', sans-serif;-webkit-tap-highlight-color: transparent;}
 *:focus{outline: none;}
+
 body{background: #131313;color: #fff;font-size: 15px;}
 
 .container{width: 90%;margin: auto;max-width: 600px;padding-top: 0;}
 
 .box{box-shadow: 0 6px 10px 0 rgba(0,0,0,0.14), 0 1px 18px 0 rgba(0,0,0,0.12), 0 3px 5px -1px rgba(0,0,0,0.3);margin: 20px 0;background: #1c1c1c;}
 
-#fixed-bar{position: fixed; width: 90%;max-width: 600px; background: #1c1c1c; top: 0;z-index: 1;padding: 0 15px;}
+#fixed-bar{position: fixed; width: 90%;max-width: 600px; top: 0;z-index: 1;padding: 0 15px;}
 #fixed-bar:before{content: "";background: #131313;height: 20px;width: 104%;top: -20px;position: absolute;left: -2%;}
 
 .list{list-style: none;padding: 0;}

@@ -9,10 +9,12 @@ var isLoop = 1;
 var isYoutube;
 var timeUpdater;
 var ctrlKeyPressed = 0;
+var errorTimeout;
 
 $(function(){
 	$aPlayer = $("#audio-player");
 	aPlayer = $aPlayer[0];
+	$progressTooltip = $(".progress-wrapper .tooltip");
 
 	/* get songs list from json file */
 	$.getJSON("songs.json", function(data){
@@ -76,21 +78,21 @@ $(function(){
 		$(this).find("i").toggleClass("fa-repeat").toggleClass("fa-refresh");
 	});
 
-	$(".pause-play").click(function(){
-		$(this).toggleClass("pause");
-		
+	$(".pause-play").click(function(){		
 		if ($(this).hasClass("pause")) {
-			if (isYoutube) {
-				yPlayer.pauseVideo();
-			} else {
-				aPlayer.pause();
-			}			
-		} else {
+			$(this).removeClass("pause");
 			if (isYoutube) {
 				yPlayer.playVideo();
 			} else {
 				aPlayer.play();
 			}
+		} else {
+			$(this).addClass("pause");
+			if (isYoutube) {
+				yPlayer.pauseVideo();
+			} else {
+				aPlayer.pause();
+			}			
 		}
 		$(".pause-play i").toggleClass("fa-play").toggleClass("fa-pause");
 	});
@@ -108,8 +110,23 @@ $(function(){
 	});
 
 	$("#show-video").click(function(){
-		$("#yplayer-container").toggleClass("fade-out");
-		$(this).find("i").toggleClass("fa-eye").toggleClass("fa-eye-slash");
+		var vContainer = $("#yplayer-container");		
+		if (vContainer.hasClass("active")) {
+			$(this).find("i").addClass("fa-eye").removeClass("fa-eye-slash");		
+			vContainer.removeClass("active");
+			setTimeout(function(){
+				vContainer.addClass("hide");
+			}, 500);
+		} else {
+			$(this).find("i").removeClass("fa-eye").addClass("fa-eye-slash");
+			vContainer.removeClass("hide");
+			$("html, body").animate({
+				scrollTop: vContainer.offset().top
+			}, 500);
+			setTimeout(function(){
+				vContainer.addClass("active");
+			}, 500);
+		}
 	});
 
 	$(".new-song").submit(function(e){
@@ -139,6 +156,24 @@ $(function(){
 		if (e.which == 1) {
 			seeking(e.offsetX);
 		}
+
+		var width = Math.round(e.offsetX / $(".progress-wrapper").width() * 100);
+		
+		if (isYoutube) {
+			var duration = yPlayer.getDuration();
+		} else {
+			var duration = aPlayer.duration;
+		}
+
+		var toolTime = duration * width / 100;
+		var toolTimeMinutes = Math.floor(toolTime / 60);	
+		var toolTimeSeconds = Math.floor(toolTime % 60);
+
+		if (toolTimeSeconds < 10) {
+			toolTimeSeconds = "0" + toolTimeSeconds;
+		}
+
+		$progressTooltip.text(toolTimeMinutes + ":" + toolTimeSeconds).css({left: e.offsetX});
 	});
 
 	$("body").keydown(function(e){
@@ -176,6 +211,8 @@ $(function(){
 			}
 		}
 	});
+
+	setFixedBarPadding(1);
 });
 
 /* play song */
@@ -199,7 +236,8 @@ function setPlayer() {
 	} else {
 		$aPlayer.attr("src", songUrl);
 	}
-	play(songStart);	
+	play(songStart);
+	setFixedBarPadding();	
 }
 
 function play(sTime = 0) {	
@@ -219,7 +257,7 @@ function play(sTime = 0) {
 	} else {
 		yPlayer.pauseVideo();
 		$("#show-video").addClass("hide").find("i").addClass("fa-eye").removeClass("fa-eye-slash");
-		$("#yplayer-container").addClass("fade-out");
+		$("#yplayer-container").addClass("hide");
 		aPlayer.currentTime = sTime;
 		aPlayer.play();
 	}
@@ -318,12 +356,34 @@ function onPlayerStateChange(event) {
 		playNext();		
 	}
 
+	if (event.data == YT.PlayerState.UNSTARTED) {
+		clearTimeout(errorTimeout);
+		errorTimeout = setTimeout(function(){
+			playNext(1);
+			console.log("Video not found or blocked");
+		}, 5000);
+	}
+
+	if (event.data == YT.PlayerState.BUFFERING) {
+		clearTimeout(errorTimeout);
+	}
+
 	if (event.data == YT.PlayerState.PLAYING) {
 		$(".pause-play").removeClass("pause").find("i").addClass("fa-pause").removeClass("fa-play");
 		updateProgress();	
 		timeUpdater = setInterval(updateProgress, 1000);
+		clearTimeout(errorTimeout);
 	} else {
 		$(".pause-play").addClass("pause").find("i").addClass("fa-play").removeClass("fa-pause");
 		clearInterval(timeUpdater);
+	}
+}
+
+function setFixedBarPadding(onLoad = 0) {
+	var fixedHeight = $("#fixed-bar").height() + 20;
+	if (onLoad) {
+		$(".container").css({paddingTop: fixedHeight + "px"});
+	} else {
+		$(".container").animate({paddingTop: fixedHeight + "px"});
 	}
 }
