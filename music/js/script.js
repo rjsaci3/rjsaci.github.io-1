@@ -90,7 +90,14 @@ $(function(){
 		}
 
 		var width = Math.round(e.offsetX / $(".progress-wrapper").width() * 100);
-		var toolTime = yPlayer.getDuration() * width / 100;
+
+		if (isYoutube) {
+			var duration = yPlayer.getDuration();
+		} else {
+			var duration = aPlayer.duration;
+		}
+
+		var toolTime = duration * width / 100;
 		var toolTimeMinutes = Math.floor(toolTime / 60);	
 		var toolTimeSeconds = Math.floor(toolTime % 60);
 
