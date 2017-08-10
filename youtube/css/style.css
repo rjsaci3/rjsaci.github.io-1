@@ -41,6 +41,7 @@ body{background: #131313;color: #fff;font-size: 15px;}
 .progress-wrapper .full-time{float: right;}
 
 #yplayer-container{transition: .5s;transform: scale(1,0);}
+#yplayer-container.inactive{height: 0;}
 #yplayer-container.active{transform: scale(1);}
 #yplayer{max-width: 100%;}
 
