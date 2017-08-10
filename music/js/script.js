@@ -71,6 +71,8 @@ $(function(){
 			$("#end").val(songEnd);
 		} else {
 			songStart = 0;
+			$("#start").val('');
+			$("#end").val('');
 		}
 
 		$("#url").val(songUrl);				
