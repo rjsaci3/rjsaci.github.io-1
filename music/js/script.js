@@ -1,56 +1,102 @@
-var songsData;
+var apiKey = "AIzaSyAnNBUSD8iYHsAaNbjZO8vsFJdC4SD4wAM";
+var channelId = "UCiFxv0_LJ855UTr6w-Hw4-g";
+var apiUrl = "https://www.googleapis.com/youtube/v3/";
+var playlistUrl = apiUrl + "playlists?key=" + apiKey + "&part=snippet&channelId=" + channelId;
+var playlistItemUrl = apiUrl + "playlistItems?key=" + apiKey + "&part=snippet&maxResults=50&playlistId=";
+
+var playlistsData = {};
+
+var $playlist;
+var $songsList;
 var songUrl;
 var songStart;
 var songEnd;
 var aPlayer;
 var yPlayer;
-var currentSong;
-var isLoop = 1;
 var isYoutube;
 var timeUpdater;
+var isLoop = 0;
 var ctrlKeyPressed = 0;
 var errorTimeout;
 
 $(function(){
 	$aPlayer = $("#audio-player");
 	aPlayer = $aPlayer[0];
+	$playlist = $("#playlist");
+	$songsList = $("#songslist");
 	$progressTooltip = $(".progress-wrapper .tooltip");
 
-	/* get songs list from json file */
-	$.getJSON("songs.json", function(data){
-		var html = '';
-		songsData = data;
-		$.each(songsData, function(k, v){
-			var faClass = "fa-music";
-			if (v.url.indexOf("youtube") > -1) {
-				faClass = "fa-video-camera";
-			}
-			html += '<li data-index="'+k+'"><i class="fa '+ faClass +'"></i>'+v.name+'</li>';
+	getPlaylists();
+
+	$playlist.on("click", "li", function(){
+		$playlist.find("li").removeClass("active");
+		$(this).addClass("active");	
+
+		createSongsLlist($(this).data("i"));
+		$(".player-action").slideDown(function(){
+			setFixedBarPadding();
 		});
-		$("#playlist").html(html);
+		$playlist.hide();
+		$songsList.show();
+		$("#close").show();
+		$("#navigate").removeClass("hide").find("i").addClass("fa-arrow-left").removeClass("fa-arrow-right");
+		$(document).scrollTop(0);
 	});
 
-	/* play song on clicking on list */
-	$("#playlist").on("click", "li", function(){
-		$("#playlist li").removeClass("active");
+	$("#navigate").click(function(){
+		$songsList.toggle();
+		$playlist.toggle();
+		$(this).find("i").toggleClass("fa-arrow-left").toggleClass("fa-arrow-right");
+		$(document).scrollTop(0);
+	});
+
+	$songsList.on("click", "li", function(){
+		$songsList.find("li").removeClass("active");
 		$(this).addClass("active");
-		currentSong = $(this).data("index");
+		id = $(this).data("id");
+		songUrl = "https://www.youtube.com/watch?v=" + id;
+		
+		if ($(this).data("custom")) {
+			songUrl = playlistsData.custom.songs[id]["url"];
+			songStart = playlistsData.custom.songs[id]["start"];
+			songEnd = playlistsData.custom.songs[id]["end"];
 
-		songUrl = songsData[currentSong]["url"];
-		songStart = songsData[currentSong]["start"];
-		songEnd = songsData[currentSong]["end"];
+			if (songUrl.indexOf("youtube") > -1) {
+				isYoutube = 1;
+			} else {
+				isYoutube = 0;
+			}
 
-		if (songUrl.indexOf("youtube") > -1) {
-			isYoutube = 1;
+			$("#start").val(songStart);
+			$("#end").val(songEnd);
 		} else {
-			isYoutube = 0;
+			songStart = 0;
 		}
 
-		$("#url").val(songUrl);
-		$("#start").val(songStart);
-		$("#end").val(songEnd);
+		$("#url").val(songUrl);				
 
-		setPlayer();
+		setPlayer(id, $(this).data("custom"));
+	});
+
+	$(".progress-wrapper").click(function(e){
+		seeking(e.offsetX);
+	});
+
+	$(".progress-wrapper").mousemove(function(e){		
+		if (e.which == 1) {
+			seeking(e.offsetX);
+		}
+
+		var width = Math.round(e.offsetX / $(".progress-wrapper").width() * 100);
+		var toolTime = yPlayer.getDuration() * width / 100;
+		var toolTimeMinutes = Math.floor(toolTime / 60);	
+		var toolTimeSeconds = Math.floor(toolTime % 60);
+
+		if (toolTimeSeconds < 10) {
+			toolTimeSeconds = "0" + toolTimeSeconds;
+		}
+
+		$progressTooltip.text(toolTimeMinutes + ":" + toolTimeSeconds).css({left: e.offsetX});
 	});
 
 	$aPlayer.bind("timeupdate", function(){
@@ -61,7 +107,7 @@ $(function(){
 	});
 
 	$aPlayer.bind("canplay", function(){
-		$(".pause-play i").removeClass("fa-play").addClass("fa-pause");
+		$(".pause-play").removeClass("pause").find("i").removeClass("fa-play").addClass("fa-pause");
 		$(".player-action-btn").removeClass("hide");	
 	});
 
@@ -75,10 +121,10 @@ $(function(){
 
 	$("#loop").click(function(){
 		isLoop = !isLoop;
-		$(this).find("i").toggleClass("fa-repeat").toggleClass("fa-refresh");
+		$(this).find("i").toggleClass("fa-refresh").toggleClass("fa-repeat");
 	});
 
-	$(".pause-play").click(function(){		
+	$(".pause-play").click(function(){
 		if ($(this).hasClass("pause")) {
 			$(this).removeClass("pause");
 			if (isYoutube) {
@@ -110,16 +156,19 @@ $(function(){
 	});
 
 	$("#show-video").click(function(){
+		if ($(this).hasClass('disable')) {
+			return false;
+		}
 		var vContainer = $("#yplayer-container");		
 		if (vContainer.hasClass("active")) {
 			$(this).find("i").addClass("fa-eye").removeClass("fa-eye-slash");		
 			vContainer.removeClass("active");
 			setTimeout(function(){
-				vContainer.addClass("hide");
+				vContainer.addClass("inactive");
 			}, 500);
 		} else {
 			$(this).find("i").removeClass("fa-eye").addClass("fa-eye-slash");
-			vContainer.removeClass("hide");
+			vContainer.removeClass("inactive");
 			$("html, body").animate({
 				scrollTop: vContainer.offset().top
 			}, 500);
@@ -127,53 +176,6 @@ $(function(){
 				vContainer.addClass("active");
 			}, 500);
 		}
-	});
-
-	$(".new-song").submit(function(e){
-		e.preventDefault();
-
-		songUrl = $("#url").val();
-		songStart = $("#start").val();
-		songEnd = $("#end").val();
-
-		if (songUrl) {
-			if (songUrl.toLowerCase().indexOf("youtube") > -1) {
-				isYoutube = 1;
-			} else {
-				isYoutube = 0;
-			}
-			setPlayer();
-		} else {
-			$("#url").focus();
-		}
-	});
-
-	$(".progress-wrapper").click(function(e){
-		seeking(e.offsetX);
-	});
-
-	$(".progress-wrapper").mousemove(function(e){		
-		if (e.which == 1) {
-			seeking(e.offsetX);
-		}
-
-		var width = Math.round(e.offsetX / $(".progress-wrapper").width() * 100);
-		
-		if (isYoutube) {
-			var duration = yPlayer.getDuration();
-		} else {
-			var duration = aPlayer.duration;
-		}
-
-		var toolTime = duration * width / 100;
-		var toolTimeMinutes = Math.floor(toolTime / 60);	
-		var toolTimeSeconds = Math.floor(toolTime % 60);
-
-		if (toolTimeSeconds < 10) {
-			toolTimeSeconds = "0" + toolTimeSeconds;
-		}
-
-		$progressTooltip.text(toolTimeMinutes + ":" + toolTimeSeconds).css({left: e.offsetX});
 	});
 
 	$("body").keydown(function(e){
@@ -195,16 +197,16 @@ $(function(){
 	}).keyup(function(e){
 		if (ctrlKeyPressed) {
 			if (e.keyCode == 37 || e.keyCode == 38) {
-				if ($("#playlist li.active").prev().length) {
-					$("#playlist li.active").prev().click();
+				if ($songsList.find("li.active").prev().length) {
+					$songsList.find("li.active").prev().click();
 				} else {
-					$("#playlist li:last").click();
+					$songsList.find("li:last").click();
 				}
 			} else if(e.keyCode == 39 || e.keyCode == 40) {
-				if ($("#playlist li.active").next().length) {
-					$("#playlist li.active").next().click();
+				if ($songsList.find("li.active").next().length) {
+					$songsList.find("li.active").next().click();
 				} else {
-					$("#playlist li:first").click();
+					$songsList.find("li:first").click();
 				}
 			} else {
 				ctrlKeyPressed = 0;
@@ -212,66 +214,161 @@ $(function(){
 		}
 	});
 
+	$(".new-song").submit(function(e){
+		e.preventDefault();
+
+		songUrl = $("#url").val();
+		songStart = $("#start").val();
+		songEnd = $("#end").val();
+
+		if (songUrl) {
+			if (songUrl.toLowerCase().indexOf("youtube") > -1) {
+				isYoutube = 1;
+			} else {
+				isYoutube = 0;
+			}
+			setPlayer('',1);
+		} else {
+			$("#url").focus();
+		}
+	});
+
 	setFixedBarPadding(1);
 });
 
-/* play song */
-function setPlayer() {	
-	if (songStart) {
-		songStart = parseInt(songStart.split(":")[0] * 60) + parseInt(songStart.split(":")[1]);
-	}
+/* get all playlists */
+function getPlaylists() {
+	$.ajax({
+		url: playlistUrl,
+		dataType: "json",
+		success: function(data) {
+			var i = 0;
+			$.each(data.items, function(k, v){
+				if (v.snippet.title.toLowerCase().indexOf("songs -") > -1) {
+					playlistsData[i] = {"id": v.id, "title": v.snippet.title.replace(/songs - /i, '')};
+					getPlaylistData(i, v.id);
+					i++;
+				}	
 
-	if (songEnd) {
-		songEnd = parseInt(songEnd.split(":")[0] * 60) + parseInt(songEnd.split(":")[1]);		
-	}
+				if (k + 1 == data.items.length) {
+					getCustomSongs(i);					
+				}
+			});			
+		},
+		error: function() {
+			alert("Some error has occured");
+		}
+	});
+}
 
-	if (isYoutube) {
-		var videoId = songUrl.split("v=")[1];
-		yPlayer.loadVideoById({
-			'videoId': videoId,
-			'startSeconds': songStart,
-			'endSeconds': songEnd,
-			'suggestedQuality': 'small'
+/* get playlist data */
+function getPlaylistData(i, id) {
+	$.ajax({
+		url: playlistItemUrl + id,
+		dataType: "json",
+		success: function(data) {
+			var j = 0;
+			playlistsData[i]["songs"] = {};
+			$.each(data.items, function(k, v){
+				if (v.snippet.title.toLowerCase().indexOf("deleted video") == -1) {
+					playlistsData[i]["songs"][j] = {"title": v.snippet.title, "videoId": v.snippet.resourceId.videoId};	
+					j++;
+				}
+			});
+		},
+		error: function() {
+			alert("Some error has occured");
+		}
+	});
+}
+
+function getCustomSongs(i) {
+	/* get songs list from json file */
+	$.getJSON("songs.json", function(data){
+		playlistsData["custom"] = {"id": "custom", "title": "Custom songs"};
+		playlistsData["custom"]["songs"] = data;	
+		createPlaylist();
+	});
+}
+
+function createPlaylist() {
+	var html = '<li data-i="all">All</li>';
+	$.each(playlistsData, function(k, v){
+		html += '<li data-i="'+ k +'">'+ v.title +'</li>';
+	});
+	$playlist.html(html);
+}
+
+function createSongsLlist(i) {
+	var html = "";
+	var songsData = [];
+
+	if (i == "all") {
+		$.each(playlistsData, function(k, v){
+			$.each(v.songs, function(k2, v2){
+				songsData.push(v2);
+			});			
 		});
 	} else {
-		$aPlayer.attr("src", songUrl);
+		songsData = playlistsData[i].songs;
 	}
-	play(songStart);
-	setFixedBarPadding();	
-}
 
-function play(sTime = 0) {	
-	$(".progress-wrapper").removeClass("hide");
-
-	$(".progress-wrapper .played-time").text("0:00");
-	$(".progress-wrapper .full-time").text("0:00");
-
-	$(".progress-wrapper .buffered").width(0);
-	$(".progress-wrapper .played").width(0);
-	
-	if (isYoutube) {
-		aPlayer.pause();
-		yPlayer.seekTo(sTime);
-		$("#show-video").removeClass("hide");
-		$(".player-action-btn").removeClass("hide");
-	} else {
-		yPlayer.pauseVideo();
-		$("#show-video").addClass("hide").find("i").addClass("fa-eye").removeClass("fa-eye-slash");
-		$("#yplayer-container").addClass("hide");
-		aPlayer.currentTime = sTime;
-		aPlayer.play();
+	if (i != "custom") {
+		songsData = shuffleObj(songsData);
 	}
-}
 
-function playNext(next = 0) {
-	if (isLoop && !next) {		
-		play(songStart);
-	} else {
-		var newIndex = currentSong + 1;
-		if (newIndex >= songsData.length) {
-			newIndex = 0;
+	$.each(songsData, function(k, v){
+		if (i == "custom") {
+			var faClass = "fa-music";
+			if (v.url.indexOf("youtube") > -1) {
+				faClass = "fa-video-camera";
+			}
+			html += '<li data-id="'+k+'" data-custom="1"><i class="fa '+ faClass +'"></i>'+v.title+'</li>';
+		} else {
+			html += '<li data-id="'+ v.videoId +'">'+ v.title +'</li>';
 		}
-		$("#playlist li[data-index='"+ newIndex +"']").click();
+	});
+	$songsList.html(html);	
+}
+
+var tag = document.createElement('script');
+tag.src = "//www.youtube.com/player_api";
+var firstScriptTag = document.getElementsByTagName('script')[0];
+firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+function onYouTubePlayerAPIReady() {
+	yPlayer = new YT.Player('yplayer', {
+		events: {
+			'onStateChange': onPlayerStateChange
+		}
+	});            
+}
+
+function onPlayerStateChange(event) {	
+	if (event.data == YT.PlayerState.ENDED) {
+		playNext();		
+	}
+
+	if (event.data == YT.PlayerState.UNSTARTED) {
+		clearTimeout(errorTimeout);
+		errorTimeout = setTimeout(function(){
+			playNext(1);
+			console.log("Video not found or blocked");
+		}, 5000);
+	}
+
+	if (event.data == YT.PlayerState.BUFFERING) {
+		clearTimeout(errorTimeout);
+	} 
+
+	if (event.data == YT.PlayerState.PLAYING) {
+		$(".pause-play").removeClass("pause").find("i").addClass("fa-pause").removeClass("fa-play");
+		updateProgress();	
+		timeUpdater = setInterval(updateProgress, 1000);
+		clearTimeout(errorTimeout);
+	} else {
+		$(".pause-play").addClass("pause").find("i").addClass("fa-play").removeClass("fa-pause");
+		clearInterval(timeUpdater);
 	}
 }
 
@@ -338,45 +435,34 @@ function seeking(offsetX) {
 	updateProgress();
 }
 
-var tag = document.createElement('script');
-tag.src = "//www.youtube.com/player_api";
-var firstScriptTag = document.getElementsByTagName('script')[0];
-firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
-function onYouTubePlayerAPIReady() {
-	yPlayer = new YT.Player('yplayer', {
-		events: {
-			'onStateChange': onPlayerStateChange
+function playNext(isNext = 0) {
+	if (isLoop && isNext == 0) {		
+		yPlayer.seekTo(songStart);
+	} else {
+		if ($songsList.find("li.active").next().length) {
+			$songsList.find("li.active").next().click();
+		} else {
+			$songsList.find("li:first").click();
 		}
-	});            
+	}
 }
 
-function onPlayerStateChange(event) {
-	if (event.data == YT.PlayerState.ENDED) {
-		playNext();		
+function shuffleObj(obj) {
+	var array = [];
+	var i = 0, j = 0, temp = null;
+
+	for (var k in obj) {
+		array[k] = obj[k];
 	}
 
-	if (event.data == YT.PlayerState.UNSTARTED) {
-		clearTimeout(errorTimeout);
-		errorTimeout = setTimeout(function(){
-			playNext(1);
-			console.log("Video not found or blocked");
-		}, 5000);
+	for (i = array.length - 1; i > 0; i -= 1) {
+		j = Math.floor(Math.random() * (i + 1));
+		temp = array[i];
+		array[i] = array[j];
+		array[j] = temp;
 	}
 
-	if (event.data == YT.PlayerState.BUFFERING) {
-		clearTimeout(errorTimeout);
-	}
-
-	if (event.data == YT.PlayerState.PLAYING) {
-		$(".pause-play").removeClass("pause").find("i").addClass("fa-pause").removeClass("fa-play");
-		updateProgress();	
-		timeUpdater = setInterval(updateProgress, 1000);
-		clearTimeout(errorTimeout);
-	} else {
-		$(".pause-play").addClass("pause").find("i").addClass("fa-play").removeClass("fa-pause");
-		clearInterval(timeUpdater);
-	}
+	return array;
 }
 
 function setFixedBarPadding(onLoad = 0) {
@@ -385,5 +471,68 @@ function setFixedBarPadding(onLoad = 0) {
 		$(".container").css({paddingTop: fixedHeight + "px"});
 	} else {
 		$(".container").animate({paddingTop: fixedHeight + "px"});
+	}
+}
+
+/* play song */
+function setPlayer(videoId = "", isCustom = 0) {
+	aPlayer.pause();
+	yPlayer.pauseVideo();
+
+	$("#show-video").removeClass("disable");
+
+	if (isCustom) {	
+
+		if (songStart) {
+			songStart = parseInt(songStart.split(":")[0] * 60) + parseInt(songStart.split(":")[1]);
+		}
+
+		if (songEnd) {
+			songEnd = parseInt(songEnd.split(":")[0] * 60) + parseInt(songEnd.split(":")[1]);		
+		}
+
+		if (isYoutube) {
+			var videoId = songUrl.split("v=")[1];
+			yPlayer.loadVideoById({
+				'videoId': videoId,
+				'startSeconds': songStart,
+				'endSeconds': songEnd,
+				'suggestedQuality': 'small'
+			});
+		} else {
+			$aPlayer.attr("src", songUrl);
+		}
+		play(songStart);
+	} else {
+		isYoutube = 1;
+		yPlayer.loadVideoById({
+			'videoId': videoId,
+			'startSeconds': 0,
+			'suggestedQuality': 'small'
+		});
+	}
+
+	$(".progress-wrapper").removeClass("hide");
+
+	$(".progress-wrapper .played-time").text("0:00");
+	$(".progress-wrapper .full-time").text("0:00");
+
+	$(".progress-wrapper .buffered").width(0);
+	$(".progress-wrapper .played").width(0);	
+	
+	$(".player-action-btn").removeClass("hide");
+	
+	setFixedBarPadding();	
+}
+
+function play(sTime = 0) {	
+	if (isYoutube) {		
+		yPlayer.seekTo(sTime);		
+		$(".player-action-btn").removeClass("hide");
+	} else {		
+		$("#show-video").addClass("disable").find("i").addClass("fa-eye").removeClass("fa-eye-slash");
+		$("#yplayer-container").addClass("hide");
+		aPlayer.currentTime = sTime;
+		aPlayer.play();
 	}
 }
