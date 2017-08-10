@@ -142,8 +142,14 @@ $(function(){
 
 		/* escape press - hide video */
 		if (e.keyCode == 27) {
-			$("#show-video i").addClass("fa-eye").removeClass("fa-eye-slash");
-			$("#yplayer-container").removeClass("active").addClass("inactive");
+			var vContainer = $("#yplayer-container");		
+			if (vContainer.hasClass("active")) {
+				$("#show-video i").addClass("fa-eye").removeClass("fa-eye-slash");		
+				vContainer.removeClass("active");
+				setTimeout(function(){
+					vContainer.addClass("inactive");
+				}, 500);
+			}
 		}
 	
 		/* arrow keys - Play prev/next song */
