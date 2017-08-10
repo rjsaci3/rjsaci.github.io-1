@@ -216,6 +216,8 @@ $(function(){
 
 	$(".new-song").submit(function(e){
 		e.preventDefault();
+		isLoop = 0;
+		$(this).find("i").removeClass("fa-refresh").addClass("fa-repeat");
 
 		songUrl = $("#url").val();
 		songStart = $("#start").val();
