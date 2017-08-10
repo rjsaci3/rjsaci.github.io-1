@@ -122,6 +122,18 @@ $(function(){
 		}
 	});
 
+	$("body").keydown(function(e){
+		/* prevent spacebar to scroll down*/
+		if (e.keyCode == 32 && !$(".pause-play").hasClass("hide")) {
+			e.preventDefault();
+		}
+
+		/* set ctrl key pressed flag */
+		if (e.keyCode == 17) {
+			ctrlKeyPressed = 1;
+		}
+	});
+
 	$("body").keyup(function(e){
 		/* spacebar press - play/pause */
 		if (e.keyCode == 32 && !$(".pause-play").hasClass("hide")) {
