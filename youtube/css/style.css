@@ -1,6 +1,10 @@
 *{margin: 0;padding: 0;box-sizing: border-box;font-family: 'Roboto', sans-serif;-webkit-tap-highlight-color: transparent;}
 *:focus{outline: none;}
 
+body::-webkit-scrollbar{width: 10px;} 
+body::-webkit-scrollbar-track{background: #1c1c1c;} 
+body::-webkit-scrollbar-thumb{background-color: #cc181e;}
+
 body{background: #131313;color: #fff;font-size: 15px;}
 
 .container{width: 90%;margin: auto;max-width: 600px;padding-top: 0;}
