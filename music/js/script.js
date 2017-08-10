@@ -188,22 +188,30 @@ $(function(){
 	});
 
 	$("body").keydown(function(e){
+		/* prevent spacebar to scroll down*/
 		if (e.keyCode == 32 && !$(".pause-play").hasClass("hide")) {
 			e.preventDefault();
+		}
+
+		/* set ctrl key pressed flag */
+		if (e.keyCode == 17) {
+			ctrlKeyPressed = 1;
 		}
 	});
 
 	$("body").keyup(function(e){
+		/* spacebar press - play/pause */
 		if (e.keyCode == 32 && !$(".pause-play").hasClass("hide")) {
 			$(".pause-play").click();
 		}
-	});
 
-	$("body").keydown(function(e){
-		if (e.keyCode == 17) {
-			ctrlKeyPressed = 1;
+		/* escape press - hide video */
+		if (e.keyCode == 27) {
+			$("#show-video i").addClass("fa-eye").removeClass("fa-eye-slash");
+			$("#yplayer-container").removeClass("active").addClass("inactive");
 		}
-	}).keyup(function(e){
+	
+		/* arrow keys - Play prev/next song */
 		if (ctrlKeyPressed) {
 			if (e.keyCode == 37 || e.keyCode == 38) {
 				if ($songsList.find("li.active").prev().length) {
@@ -542,7 +550,7 @@ function play(sTime = 0) {
 		$(".player-action-btn").removeClass("hide");
 	} else {		
 		$("#show-video").addClass("disable").find("i").addClass("fa-eye").removeClass("fa-eye-slash");
-		$("#yplayer-container").addClass("hide");
+		$("#yplayer-container").removeClass("active").addClass("inactive");
 		aPlayer.currentTime = sTime;
 		aPlayer.play();
 	}

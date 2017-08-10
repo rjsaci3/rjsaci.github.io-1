@@ -122,23 +122,19 @@ $(function(){
 		}
 	});
 
-	$("body").keydown(function(e){
-		if (e.keyCode == 32 && !$(".pause-play").hasClass("hide")) {
-			e.preventDefault();
-		}
-	});
-
 	$("body").keyup(function(e){
+		/* spacebar press - play/pause */
 		if (e.keyCode == 32 && !$(".pause-play").hasClass("hide")) {
 			$(".pause-play").click();
 		}
-	});
 
-	$("body").keydown(function(e){
-		if (e.keyCode == 17) {
-			ctrlKeyPressed = 1;
+		/* escape press - hide video */
+		if (e.keyCode == 27) {
+			$("#show-video i").addClass("fa-eye").removeClass("fa-eye-slash");
+			$("#yplayer-container").removeClass("active").addClass("inactive");
 		}
-	}).keyup(function(e){
+	
+		/* arrow keys - Play prev/next song */
 		if (ctrlKeyPressed) {
 			if (e.keyCode == 37 || e.keyCode == 38) {
 				if ($songsList.find("li.active").prev().length) {
