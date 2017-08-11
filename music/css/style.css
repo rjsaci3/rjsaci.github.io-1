@@ -19,7 +19,7 @@ body{background: #131313;color: #fff;font-size: 15px;}
 #fixed-bar{position: fixed; width: 90%;max-width: 600px; top: 0;z-index: 1;padding: 0 15px;}
 #fixed-bar:before{content: "";background: #131313;height: 20px;width: 104%;top: -20px;position: absolute;left: -2%;}
 
-.list{list-style: none;padding: 0;}
+.list{list-style: none;padding: 0;margin-top: 0;}
 .list li{padding: 10px 15px;border-bottom: 1px solid #232323;cursor: pointer}
 .list li:last-child{border: none;}
 .list li.active, .list li:hover{background: #cc181e;color: #fff;}
