@@ -68,7 +68,4 @@ body{background: #131313;color: #fff;font-size: 15px;}
 
 	.player-action{margin: 5px 0;}
 	.player-action .fab-btn{margin: 5px;}
-
-	.fab-btn{width: 40px;height: 40px;}
-	.fab-btn i{font-size: 17px;line-height: 40px;}
 }
