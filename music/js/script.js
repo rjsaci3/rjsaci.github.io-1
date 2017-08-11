@@ -330,9 +330,11 @@ function createSongsLlist(i) {
 
 	if (i == "all") {
 		$.each(playlistsData, function(k, v){
-			$.each(v.songs, function(k2, v2){
-				songsData.push(v2);
-			});			
+			if (k != "custom") {
+				$.each(v.songs, function(k2, v2){
+					songsData.push(v2);
+				});
+			}
 		});
 	} else {
 		songsData = playlistsData[i].songs;
