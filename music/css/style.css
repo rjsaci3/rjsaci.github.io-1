@@ -43,7 +43,7 @@ body{background: #131313;color: #fff;font-size: 15px;}
 .progress-wrapper:hover .played:after{content: "";}
 .progress-wrapper .tooltip{position: absolute;top: -20px;background: #000;padding: 2px 5px;font-size: 11px;margin-left: -10px;display: none;}
 .progress-wrapper:hover .tooltip{display: inline-block;}
-.progress-wrapper .time{display: block;margin-top: 10px;font-size: 13px;}
+.progress-wrapper .time{display: block;margin-top: 10px;font-size: 13px;pointer-events: none;}
 .progress-wrapper .full-time{float: right;}
 
 .new-song{padding: 5px 20px;text-align: center;}
