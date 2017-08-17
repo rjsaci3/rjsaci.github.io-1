@@ -27,7 +27,7 @@ $(function(){
 
 		createSongsLlist($(this).data("i"));
 		$(".player-action").slideDown(function(){
-			setFixedBarPadding();
+			setFixedHeaderPadding();
 		});
 		$playlist.hide();
 		$songsList.show();
@@ -62,7 +62,7 @@ $(function(){
 		$(".progress-wrapper .played").width(0);
 
 		$(".player-action-btn").removeClass("hide");
-		setFixedBarPadding();
+		setFixedHeaderPadding();
 	});
 
 	$(".progress-wrapper").click(function(e){
@@ -171,6 +171,8 @@ $(function(){
 			}
 		}
 	});
+
+	setFixedHeaderPadding(1);
 });
 
 /* get all playlists */
@@ -379,7 +381,11 @@ function shuffleObj(obj) {
 	return array;
 }
 
-function setFixedBarPadding() {
+function setFixedHeaderPadding(onLoad = 0) {
 	var fixedHeight = $("#fixed-bar").height() + 20;
-	$(".container").animate({paddingTop: fixedHeight + "px"});
+	if (onLoad) {
+		$(".container").css({paddingTop: fixedHeight + "px"});
+	} else {
+		$(".container").animate({paddingTop: fixedHeight + "px"});
+	}
 }
