@@ -20,7 +20,7 @@ body{background: #131313;color: #fff;font-size: 15px;}
 #fixed-bar:before{content: "";background: #131313;height: 20px;width: 104%;top: -20px;position: absolute;left: -2%;}
 
 .list{list-style: none;padding: 0;margin-top: 0;}
-.list li{padding: 10px 15px;border-bottom: 1px solid #232323;cursor: pointer}
+.list li{padding: 10px 15px;border-bottom: 1px solid #232323;cursor: pointer;overflow: hidden;text-overflow: ellipsis;}
 .list li:last-child{border: none;}
 .list li.active, .list li:hover{background: #cc181e;color: #fff;}
 .list i{margin-right: 15px;}
