@@ -115,7 +115,7 @@ $(function(){
 		resume();
 	});
 
-	$(".progress-wrapper").mousemove(function(e){		
+	$(".progress-wrapper").mousemove(function(e){
 		if (e.which == 1) {
 			updateProgress(e.offsetX);
 		}
