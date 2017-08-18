@@ -37,7 +37,7 @@ $(function(){
 		$playlist.find("li").removeClass("active");
 		$(this).addClass("active");	
 
-		createSongsLlist($(this).data("i"));
+		createSongsList($(this).data("i"));
 		$(".player-action").slideDown(function(){
 			setFixedHeaderPadding();
 		});
@@ -328,7 +328,7 @@ function createPlaylist() {
 }
 
 /* create songs list - inner list */
-function createSongsLlist(i) {
+function createSongsList(i) {
 	var html = "";
 	var songsData = [];
 
