@@ -1,0 +1,39 @@
+<!doctype html>
+<html>
+<head>
+    <base href="/">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1,user-scalable=no">
+    
+    <title>My Vocabulary</title>
+
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="manifest" href="manifest.json">
+
+    <style>
+        body{padding: 0;margin: 0;}
+        #splash-screen {height: 100vh;background: #e8e8e8;}
+        #splash-screen img {position: absolute;top: calc(50% - 50px);left: calc(50% - 50px);max-width: 100px;}
+
+        .animated{animation-duration:1s;animation-fill-mode:both}.animated.infinite{animation-iteration-count:infinite}
+        @keyframes rubberBand{from{transform:scale3d(1,1,1)}30%{transform:scale3d(1.25,0.75,1)}40%{transform:scale3d(0.75,1.25,1)}50%{transform:scale3d(1.15,0.85,1)}65%{transform:scale3d(.95,1.05,1)}75%{transform:scale3d(1.05,.95,1)}to{transform:scale3d(1,1,1)}}.rubberBand{animation-name:rubberBand}
+    </style>
+</head>
+<body>
+    <app-root>
+        <div id="splash-screen">
+            <img class="animated infinite rubberBand" src="assets/icons/android-chrome-192x192.png" alt="My Vocabulary">
+        </div>
+    </app-root>
+
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/service-worker.js').then(function() {
+                console.log('Service worker registered');
+            }).catch(function(error) {
+                console.log('Service worker registration failed: ', error);
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,41 @@
+<md-toolbar id="secondary-toolbar">
+    <span class="fill-space"></span>
+    <md-input-container [class.hide]="!showSearchBox" floatPlaceholder="never">
+        <input *ngIf="!filterByDefinition" mdInput type="text" [(ngModel)]="filterValue.name" placeholder="Search word" [focus]="true" #focusElement>
+        <input *ngIf="filterByDefinition" mdInput type="text" [(ngModel)]="filterValue.definition" placeholder="Search definition" [focus]="true" #focusElement>
+    </md-input-container>
+    <button *ngIf="!showSearchBox" md-icon-button (click)="showSearchBox = 1;setFocus()"><md-icon>search</md-icon></button>
+    <button *ngIf="showSearchBox" md-icon-button (click)="showSearchBox = 0;filterValue.name=filterValue.definition=''"><md-icon>close</md-icon></button>
+    <button md-icon-button [mdMenuTriggerFor]="topMenu"><md-icon>more_vert</md-icon></button>
+    <md-menu #topMenu="mdMenu">
+        <button md-menu-item (click)="getAllWords('created_on', 1, 1)">Recent</button>
+        <button md-menu-item (click)="getAllWords('created_on', 0, 1)">Earlier</button>
+        <button md-menu-item (click)="getAllWords('name', 0, 1)">Ascending</button>
+        <button md-menu-item (click)="getAllWords('name', 1, 1)">Descending</button>
+        <button *ngIf="filterByDefinition" md-menu-item (click)="filterByDefinition = 0;filterValue.definition = '';"><md-icon>search</md-icon>Word</button>
+        <button *ngIf="!filterByDefinition" md-menu-item (click)="filterByDefinition = 1;filterValue.name = '';"><md-icon>search</md-icon>Definition</button>
+        <button *ngIf="!helperService.panDeleteEnabled" md-menu-item (click)="helperService.panDeleteEnabled = 1"><md-icon>delete</md-icon>Enable</button>
+        <button *ngIf="helperService.panDeleteEnabled" md-menu-item (click)="helperService.panDeleteEnabled = 0"><md-icon>delete_forever</md-icon>Disable</button>
+        <button *ngIf="!isSpeechOn" md-menu-item (click)="isSpeechOn = 1"><md-icon>volume_off</md-icon>OFF</button>
+        <button *ngIf="isSpeechOn" md-menu-item (click)="isSpeechOn = 0"><md-icon>volume_up</md-icon>ON</button>
+    </md-menu>
+</md-toolbar>
+<md-card class="main-card list-card" (tap)="onCardTap($event)" (pan)="onCardPan($event)" (panend)="onCardPanEnd($event)">
+    <div class="spinner-container"><md-spinner *ngIf="!hideSpinner" color="accent"></md-spinner></div>
+    <md-list class="draggable-list">
+        <md-list-item id="{{word.name | slice:0:1}}" class="animated" *ngFor="let word of words | async | filterBy: filterValue" [@listState]="helperService.animationState[word.$key]" [style.left]="helperService.pan.left[word.$key]" [style.animation]="helperService.animatedList[word.$key]" [class.opacity-hide]="helperService.animatedList[word.$key]" [attr.data-key]="word.$key" [attr.data-name]="word.name">
+            <p md-line class="capitalize"><b>{{word.name}}</b></p>
+            <p md-line class="definition">{{word.definition}}</p>
+            <span class="pan-icon edit-icon" [@listIconState]="helperService.listIconState.edit[word.$key]" [style.left]="helperService.pan.iconPosition[word.$key]" [style.width]="helperService.pan.iconWidth[word.$key]">
+                <md-icon>edit</md-icon>
+            </span>
+            <span class="pan-icon delete-icon" [@listIconState]="helperService.listIconState.delete[word.$key]" [style.right]="helperService.pan.iconPosition[word.$key]" [style.width]="helperService.pan.iconWidth[word.$key]">
+                <md-icon>delete</md-icon>
+            </span>
+        </md-list-item>
+        <p *ngIf="dataLength == 0" class="no-record">No record found</p>
+    </md-list>
+</md-card>
+<button md-fab class="fixed-fab" [@snackbarState]="helperService.snackbarState" (click)="add()" (panleft)="helperService.scrollContent()">{{dataLength}}</button>
+
+<alphabet-scroll [class.hide]="!showAlphabetScroll"></alphabet-scroll>

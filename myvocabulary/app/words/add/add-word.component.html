@@ -1,0 +1,36 @@
+<md-card *ngIf="!isDialog" class="form-card">
+    <form (submit)="addWord()" autocomplete="off">
+        <md-card-content>
+            <md-select placeholder="Category" [(ngModel)]="newWord.category" name="category" required>
+                <md-option *ngFor="let category of categories" [value]="category.$key">{{category.name}}</md-option>
+            </md-select>
+            <md-input-container>
+                <input mdInput type="text" [(ngModel)]="newWord.name" name="name" placeholder="Word" required>
+            </md-input-container>
+            <md-input-container>
+                <input mdInput type="text" [(ngModel)]="newWord.definition" name="definition" placeholder="Definition" required>
+            </md-input-container>
+        </md-card-content>
+        <md-card-actions>
+            <button md-raised-button color="accent" [disabled]="helperService.submitDisabled == 1">Submit</button>
+        </md-card-actions>
+    </form>
+</md-card>
+
+<form *ngIf="isDialog" (submit)="addWord()" autocomplete="off" class="form-dialog">
+    <md-dialog-content>
+        <md-select placeholder="Category" [(ngModel)]="newWord.category" name="category" required>
+            <md-option *ngFor="let category of categories" [value]="category.$key">{{category.name}}</md-option>
+        </md-select>
+        <md-input-container>
+            <input mdInput type="text" [(ngModel)]="newWord.name" name="name" placeholder="Word" required>
+        </md-input-container>
+        <md-input-container>
+            <input mdInput type="text" [(ngModel)]="newWord.definition" name="definition" placeholder="Definition" required>
+        </md-input-container>
+    </md-dialog-content>
+    <md-dialog-actions>
+        <button md-raised-button md-dialog-close>Close</button>
+        <button md-raised-button color="accent" [disabled]="helperService.submitDisabled == 1">Submit</button>
+    </md-dialog-actions>
+</form>
