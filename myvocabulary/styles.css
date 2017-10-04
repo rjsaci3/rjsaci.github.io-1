@@ -1,0 +1,30 @@
+/* You can add global styles to this file, and also import other style files */
+
+@import '~https://fonts.googleapis.com/icon?family=Material+Icons';
+@import '~@angular/material/core/theming/prebuilt/deeppurple-amber.css';
+
+body {
+    margin: 0;
+    font-family: Roboto, sans-serif;
+}
+
+md-sidenav-container {
+    height: calc(100vh - 64px);
+}
+
+.fill-space {
+    flex: 1 1 auto;
+}
+
+.icon-20 {
+    font-size: 20px;
+}
+
+.container {
+    width: 80%;
+    margin: 20px auto;
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 0 6px 10px 0 rgba(0,0,0,0.14), 0 1px 18px 0 rgba(0,0,0,0.12), 0 3px 5px -1px rgba(0,0,0,0.3);
+    min-height: calc(100vh - 144px);
+}
