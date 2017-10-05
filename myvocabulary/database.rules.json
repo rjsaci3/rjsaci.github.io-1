@@ -1,0 +1,9 @@
+{
+    "rules": {
+        ".read":  "root.child('allowedUids').child(auth.uid).exists()",
+        ".write":  "root.child('allowedUids').child(auth.uid).exists()",
+        "words": {
+            ".indexOn": "category"
+        }
+    }
+}
